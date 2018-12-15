@@ -1,12 +1,15 @@
 from flask import Flask
 from random_sentence import *
+from markov import MarkovChain
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    text_list = text_to_list('blog-text')
-    return generate_sentence(text_list)
+    markov = MarkovChain()
+    dict = markov.build_markov()
+    return markov.generate_sentence(dict)
+
 
 
 if __name__ == "__main__":
