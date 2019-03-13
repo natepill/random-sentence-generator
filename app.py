@@ -3,6 +3,13 @@ from markov import MarkovChain
 
 app = Flask(__name__)
 
+
+# Art of War
+# Confusious text
+# How to Win Friends or Influence People
+# Any Robert Greene book
+
+
 @app.route('/')
 def hello_world():
     markov = MarkovChain()

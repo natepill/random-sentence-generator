@@ -1,40 +1,42 @@
-
-from __future__ import division, print_function  # Python 2 and 3 compatibility
-
+from __future__ import division, print_function # Python 2 and 3 compatability
 
 class Dictogram(dict):
-    """Dictogram is a histogram implemented as a subclass of the dict type."""
+    """Dictogram is a histogram implemented as a subclass of the dictionary type"""
+
 
     def __init__(self, word_list=None):
-        """Initialize this histogram as a new dict and count given words."""
-        super(Dictogram, self).__init__()  # Initialize this as a new dict
-        # Add properties to track useful word counts for this histogram
-        self.types = 0  # Count of distinct word types in this histogram
-        self.tokens = 0  # Total count of all word tokens in this histogram
-        # Count words in given list, if any
+        """Initialize this histogram as a new dictionary and count given words"""
+        super(Dictogram, self).__init__() # Initialize this as a new dictionary
+
+        self.types = 0 # unique count of words
+        self.tokens = 0 # total len of words in histogram
+
+        # Initialize the dictogram with the passed in word list
         if word_list is not None:
-            for word in word_list:
-                self.add_count(word)
+            self.add_count(word_list)
 
-    def add_count(self, word, count=1):
-        """Increase frequency count of given word by given count amount."""
-        # TODO: Add word to dictogram
-        # TODO: Increase word frequency by count
-        if word not in self:
-            self[word] = count
-            self.types += 1
-        else:
-            self[word] += count
-        self.tokens += count
+    def add_count(self, word_list, count=1):
+        """Increase frequency count of given word by given count amount"""
+        for word in word_list:
+            # check to see if word is not in dictogram
+            # IF NOT: add word and increment count, tokens, types
+            if word not in self:
+                self[word] = count
+                self.tokens += count
+                self.types += count
 
-    def frequency(self, word):
-        """Return frequency count of given word, or 0 if word is not found."""
-        # TODO: Retrieve word frequency count
-        if word not in self:
-            return 0
-        else:
-            return self[word]
+            # if word is in dictogram, increment count, tokens
+            else:
+                self[word] += count
+                self.tokens += count
 
+    def frequency(self, word, word_list):
+        """Return frequency count of given word, or 0 if word is not found"""
+        word_frequency = 0
+        for key in word_list:
+            if key == word:
+                word_frequency += 1
+        return word_frequency
 
 
 def print_histogram(word_list):
