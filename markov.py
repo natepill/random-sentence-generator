@@ -4,7 +4,38 @@ import sys
 import os
 import random
 
+
+"""
+For small to medium sized corpuses, the MarkovChain will be built quickly,
+however we may want to refactor to accomadate cached tokenization and token retrival.
+The web app should quickly generate sentences.
+
+"""
+
+
+"""
+TODO:
+Faith's text cleaning method
+Dale Carniege or desired text
+Random Walk to generate senteces ---> Generating Start and Stop tokens for text
+Use pickle to cache
+Web app interface
+
+"""
+
+
 class MarkovChain:
+
+    def __init__(self, filename):
+        """Initializes MarkovChain and saves the filename that needs to be utilized """
+        self.filename = filename
+
+
+    def tokenize(text, filename):
+        """ takes in cleaned text as string and makes it into a list of tokens """
+        with open(filename) as file:
+            tokenized_text = file.read().split()
+            return tokenized_text
 
     def build_markov(self):
         dict = {}
@@ -27,7 +58,7 @@ class MarkovChain:
         return dict
 
 
-    def nth_order_markov_chain(order, text_list):
+    def nth_order_markov_chain(self, order, text_list):
         """ this function takes in a word and checks to see what words come after it
         to determine the word sequence for our generated markov chain"""
         markov_dict = dict()
@@ -47,26 +78,91 @@ class MarkovChain:
         return markov_dict
 
 
-    def generate_sentence(self, dict):
-        sentence = ""
-        list_of_keys = list(dict.keys())
-        index = random.randint(0, len(list_of_keys)-1)
-        chosen_word = list_of_keys[index]
-        sentence = sentence + chosen_word
+    def start_token(self, dictionary):
+        """ Get words that can start a sentence; this method is O(n) worst case
+        because one must check every word in the corpus"""
+        start_tokens = []
+        for key in dictionary:
 
-        for _ in range(0,20):
-            dictogram = dict.get(chosen_word)
-            print(dictogram)
-            new_word = random_word(self, dictogram)
-            sentence = sentence +" "+ new_word
-            chosen_word = new_word
+            # TODO: Can refactor to small one liner function isStartOfSentence
+            if key[0].islower() is False and key[0].endswith('.') is False:
+                start_tokens.append(key)
 
-        print(sentence)
+        token = random.choice(start_tokens)
+        return token
+
+    def stop_token(self, dictionary):
+        """ Get words that can end a sentence"""
+        stop_tokens = []
+        for key, value in dictionary.items():
+            # the key number must be changed depending on order number
+            if key[2].endswith('.') or key[2].endswith('?'):
+                # print("word with .", key)
+                stop_tokens.append(key)
+        return stop_tokens
+
+    def create_sentence(start_token, stop_tokens, dictionary):
+        """ takes dictionary, start and end tokens and makes a sentence """
+        # create sentence and add first word
+        sentence = []
+        # this is hard coded; must be changed to fit the order number; currently third
+        (word1, word2, word3) = start_token
+        sentence.append(word1)
+        sentence.append(word2)
+        sentence.append(word3)
+        # print("There should be three words", sentence)
+
+        current_token = start_token
+        # print("This is my dictionary", dictionary)
+        # stop when current_token is a stop token
+        while current_token not in stop_tokens or len(sentence) <= 8:
+            for key, value in dictionary.items():
+                if key == current_token:
+                    # sample from histogram of values
+                    cumulative = sample.cumulative_distribution(value)
+                    sample_word = sample.sample(cumulative)
+                    # add new sample to sentence_list
+                    sentence.append(sample_word)
+                    # assign second word of key and value to current token
+                    # this is hard coded; must be changed to fit the order number
+                    # I am unpacking the current token
+                    (current_token_one, current_token_two, current_token_three) = current_token
+                    current_token = (current_token_two, current_token_three, sample_word)
+                    # get out of for loop and start process over
+                    break
         return sentence
+
+
+    # def generate_sentence(self, dict):
+    #
+    #     #TODO: Need to refactor to implemented start and stop tokens
+    #     """Taking a random word, and generating a sentence
+    #     with the next 20 words based off the start of the chain."""
+    #
+    #     sentence = ""
+    #     list_of_keys = list(dict.keys())
+    #     index = random.randint(0, len(list_of_keys)-1)
+    #     chosen_word = list_of_keys[index]
+    #     sentence = sentence + chosen_word
+    #
+    #     for _ in range(0,20):
+    #         dictogram = dict.get(chosen_word)
+    #         print(dictogram)
+    #         new_word = random_word(self, dictogram)
+    #         sentence = sentence +" "+ new_word
+    #         chosen_word = new_word
+    #
+    #     print(sentence)
+    #     return sentence
 
 
 
 if __name__ == '__main__':
-    markov = MarkovChain()
-    dict = markov.build_markov()
-    markov.generate_sentence(dict)
+    markov = MarkovChain('holmes-text.txt')
+    tokenized_text = markov.tokenize(markov.filename)
+    second_order_markov = markov.nth_order_markov_chain(2, tokenized_text)
+    print(second_order_markov)
+
+    # markov = MarkovChain()
+    # dict = markov.build_markov()
+    # markov.generate_sentence(dict)
