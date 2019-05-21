@@ -15,7 +15,6 @@ The web app should quickly generate sentences.
 
 """
 TODO:
-Faith's text cleaning method
 Dale Carniege or desired text
 Random Walk to generate senteces ---> Generating Start and Stop tokens for text
 Use pickle to cache
@@ -30,12 +29,21 @@ class MarkovChain:
         """Initializes MarkovChain and saves the filename that needs to be utilized """
         self.filename = filename
 
+    def cleanup(filename):
+        """ takes in a text file, opens it and cleans text using regex. outputs
+        string of cleaned text """
+        with open(filename, 'r') as file:
+            # print(source_text.read())
+            no_chapters = re.sub('[A-Z]{3,}', ' ', file.read())
+            remove_periods = re.sub('(\s\.){4,}', '', no_chapters)
+            cleaned_text = re.sub('\*', '', remove_periods)
+        return cleaned_text
 
-    def tokenize(text, filename):
+
+
+    def tokenize(text):
         """ takes in cleaned text as string and makes it into a list of tokens """
-        with open(filename) as file:
-            tokenized_text = file.read().split()
-            return tokenized_text
+        return text.split()
 
     def build_markov(self):
         dict = {}
@@ -159,9 +167,17 @@ class MarkovChain:
 
 if __name__ == '__main__':
     markov = MarkovChain('holmes-text.txt')
+    cleaned_text = markov.cleanup()
+
     tokenized_text = markov.tokenize(markov.filename)
     second_order_markov = markov.nth_order_markov_chain(2, tokenized_text)
-    print(second_order_markov)
+    # print(second_order_markov)
+
+    first_word = markov.start_token(second_order_markov)
+    end_words = markov.stop_token(second_order_markov)
+    markov_list = markov.create_sentence(first_word, end_words, second_order_markov)
+    markov_sentence = " ".join(markov_list)
+    print(markov_sentence)
 
     # markov = MarkovChain()
     # dict = markov.build_markov()
