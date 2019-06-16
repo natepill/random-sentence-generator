@@ -3,6 +3,8 @@ from rando_word import random_word
 import sys
 import os
 import random
+import re
+import sample
 
 
 """
@@ -29,7 +31,7 @@ class MarkovChain:
         """Initializes MarkovChain and saves the filename that needs to be utilized """
         self.filename = filename
 
-    def cleanup(filename):
+    def cleanup(self, filename):
         """ takes in a text file, opens it and cleans text using regex. outputs
         string of cleaned text """
         with open(filename, 'r') as file:
@@ -41,7 +43,7 @@ class MarkovChain:
 
 
 
-    def tokenize(text):
+    def tokenize(self, text):
         """ takes in cleaned text as string and makes it into a list of tokens """
         return text.split()
 
@@ -109,7 +111,7 @@ class MarkovChain:
                 stop_tokens.append(key)
         return stop_tokens
 
-    def create_sentence(start_token, stop_tokens, dictionary):
+    def create_sentence(self, start_token, stop_tokens, dictionary):
         """ takes dictionary, start and end tokens and makes a sentence """
         # create sentence and add first word
         sentence = []
@@ -126,6 +128,8 @@ class MarkovChain:
         while current_token not in stop_tokens or len(sentence) <= 8:
             for key, value in dictionary.items():
                 if key == current_token:
+
+                    #
                     # sample from histogram of values
                     cumulative = sample.cumulative_distribution(value)
                     sample_word = sample.sample(cumulative)
@@ -164,18 +168,17 @@ class MarkovChain:
     #     return sentence
 
 
-
 if __name__ == '__main__':
-    markov = MarkovChain('holmes-text.txt')
-    cleaned_text = markov.cleanup()
+    markov = MarkovChain('tony-robbins.txt')
+    cleaned_text = markov.cleanup(markov.filename)
 
-    tokenized_text = markov.tokenize(markov.filename)
-    second_order_markov = markov.nth_order_markov_chain(2, tokenized_text)
+    tokenized_text = markov.tokenize(cleaned_text)
+    third_order_markov = markov.nth_order_markov_chain(3, tokenized_text)
     # print(second_order_markov)
 
-    first_word = markov.start_token(second_order_markov)
-    end_words = markov.stop_token(second_order_markov)
-    markov_list = markov.create_sentence(first_word, end_words, second_order_markov)
+    first_word = markov.start_token(third_order_markov)
+    end_words = markov.stop_token(third_order_markov)
+    markov_list = markov.create_sentence(first_word, end_words, third_order_markov)
     markov_sentence = " ".join(markov_list)
     print(markov_sentence)
 
