@@ -169,7 +169,13 @@ class MarkovChain:
 
 
 if __name__ == '__main__':
-    markov = MarkovChain('tony-robbins.txt')
+    # Use Qoutes or Think and Grow RICH
+    # Think and Grow rich is in need of text cleaning
+    # Perhaps research methods of text cleaning books
+
+    # markov = MarkovChain('think-and-grow-rich.txt')
+    # markov = MarkovChain('harry_potter_7.txt')
+    markov = MarkovChain('lincoln-speeches.txt')
     cleaned_text = markov.cleanup(markov.filename)
 
     tokenized_text = markov.tokenize(cleaned_text)
