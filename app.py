@@ -7,7 +7,7 @@ app = Flask(__name__)
 # Art of War
 # Confusious text
 # How to Win Friends or Influence People
-# Any Robert Greene book
+# Any Robert Greene book, ie: 48 laws of Power
 
 
 @app.route('/')
