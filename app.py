@@ -12,10 +12,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    markov = MarkovChain('harry_potter_7.txt')
-    dict = markov.build_markov()
-    return markov.create_sentence(dict)
-
+    return generate_lincoln_tweet('lincoln-speeches.txt')
 
 
 if __name__ == "__main__":
