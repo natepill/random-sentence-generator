@@ -145,6 +145,23 @@ class MarkovChain:
         return sentence
 
 
+def generate_lincoln_tweet(filename):
+    """ Main function for generating the tweet text based on given filename """
+
+    markov = MarkovChain(filename)
+    cleaned_text = markov.cleanup(markov.filename)
+
+    tokenized_text = markov.tokenize(cleaned_text)
+    third_order_markov = markov.nth_order_markov_chain(3, tokenized_text)
+    # print(second_order_markov)
+
+    first_word = markov.start_token(third_order_markov)
+    end_words = markov.stop_token(third_order_markov)
+    markov_list = markov.create_sentence(first_word, end_words, third_order_markov)
+    markov_sentence = " ".join(markov_list)
+    print(markov_sentence)
+    return markov_sentence
+
     # def generate_sentence(self, dict):
     #
     #     #TODO: Need to refactor to implemented start and stop tokens
@@ -169,13 +186,15 @@ class MarkovChain:
 
 
 if __name__ == '__main__':
+
+    """ For local testing purposes run the markov.py file to print sample tweet """
     # Use Qoutes or Think and Grow RICH
     # Think and Grow rich is in need of text cleaning
     # Perhaps research methods of text cleaning books
 
     # markov = MarkovChain('think-and-grow-rich.txt')
     # markov = MarkovChain('harry_potter_7.txt')
-    markov = MarkovChain('lincoln-speeches.txt')
+    markov = MarkovChain('harry_potter_7.txt')
     cleaned_text = markov.cleanup(markov.filename)
 
     tokenized_text = markov.tokenize(cleaned_text)
