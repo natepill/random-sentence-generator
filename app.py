@@ -11,9 +11,10 @@ app = Flask(__name__)
 
 
 @app.route('/')
-def hello_world():
-    return render_template('startbootstrap-freelancer/index.html')
-    # return generate_lincoln_tweet('lincoln-speeches.txt')
+def index():
+    generated_tweet = generate_lincoln_tweet('lincoln-speeches.txt')
+    return render_template('startbootstrap-freelancer/index.html', generated_tweet=generated_tweet)
+
 
 
 if __name__ == "__main__":
