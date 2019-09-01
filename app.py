@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from markov import MarkovChain, generate_lincoln_tweet
 
 app = Flask(__name__)
@@ -12,7 +12,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return generate_lincoln_tweet('lincoln-speeches.txt')
+    return render_template('startbootstrap-freelancer/index.html')
+    # return generate_lincoln_tweet('lincoln-speeches.txt')
 
 
 if __name__ == "__main__":
